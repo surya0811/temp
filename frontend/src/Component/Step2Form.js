@@ -29,7 +29,7 @@ const Step2Form = ({ onNext }) => {
           <input
             type="text"
             placeholder="Enter Variant Description"
-            className="w-full border p-2 rounded-l focus:outline-none focus:ring focus:border-blue-300"
+            className="w-full border p-2 rounded-l focus:outline-none focus:ring focus:border-blue-300 uppercase"
             value={newVariantDescription}
             onChange={(e) => setNewVariantDescription(e.target.value)}
           />

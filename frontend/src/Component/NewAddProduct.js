@@ -22,6 +22,7 @@ const AddProductForm = () => {
     setProductData({ ...productData, ...data });
     setStep(step + 1);
   };
+  const productImageURL = productData.productImage ? URL.createObjectURL(productData.productImage) : '';
 
   const handleAddValues = (values) => {
     console.log('handleAddValues called with values:', values);
@@ -50,6 +51,7 @@ const AddProductForm = () => {
   const formData = new FormData();
   formData.append('productName', productData.productName);
   formData.append('productDescription', productData.productDescription);
+  formData.append('variants',JSON.stringify(productData.variants));
   formData.append('variantValues', JSON.stringify(productData.variantValues));
 
   // Append productImage only if it exists
@@ -126,15 +128,15 @@ const AddProductForm = () => {
           </div>
           {productData.productImage && (
             <div className="mb-2 text-white">
-              <span className="font-bold">Image:</span>
-              <img
-                src={productData.productImage}
-                alt="Product Preview"
-                className="mt-2 rounded"
-                style={{ maxWidth: '50%', height: 'auto' }}
-              />
+                <span className="font-bold">Image:</span>
+                <img
+                  src={productImageURL}
+                  alt="Product Preview"
+                  className="mt-2 rounded"
+                  style={{ maxWidth: '50%', height: 'auto' }}
+                />
             </div>
-          )}
+            )}
           <div className="mb-2 text-white">
             <span className="font-bold">Description:</span> {productData.productDescription}
           </div>

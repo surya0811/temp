@@ -24,7 +24,7 @@ const connection =   mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'manager',
-  database: 'assetmanagement'
+  database: 'newasset'
 });
 
 connection.connect();
@@ -57,16 +57,19 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
 app.post('/product', upload.single('productImage'), (req, res) => {
-  const { productName, productDescription,variants, variantValues } = req.body;
-  const productImage = req.file ? req.file.path : null; // Save the image path
+  const { productName, productDescription, variants, variantValues } = req.body;
+  const productImage = req.file ? req.file.path : null;
+
+  // Check if variants is present in the request body
+  if (variants === undefined || variants === null) {
+    return res.status(400).json({ success: false, error: 'Variants are required' });
+  }
+  const variantValuesString = `[${Object.values(variantValues).map(value => `"${value}"`).join(',')}]`;
 
   // Insert product data into MySQL database
-   const sql = `INSERT INTO products (productName, productImage, productDescription,variant, variantValues) VALUES (?, ?, ?, ?,?)`;
-  const values = [productName, productImage, productDescription, JSON.stringify(variants), JSON.stringify(variantValues)];
-  
-  console.log('Product image path:', productImage);
+  const sql = "INSERT INTO products(`productName`, `productImage`, `productDescription`, `variants`, `variantValues`) VALUES (?,?,?,?,?);"
+  const values = [productName, productImage, productDescription, JSON.stringify(variants), variantValuesString];
   connection.query(sql, values, (err, result) => {
     if (err) {
       console.error('Error inserting data into MySQL:', err);
