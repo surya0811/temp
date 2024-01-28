@@ -57,19 +57,28 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+app.get('/assesst', (req, res) => {
+  const sql = 'SELECT * FROM products';
+  connection.query(sql, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
 app.post('/product', upload.single('productImage'), (req, res) => {
   const { productName, productDescription, variants, variantValues } = req.body;
   const productImage = req.file ? req.file.path : null;
 
   // Check if variants is present in the request body
-  if (variants === undefined || variants === null) {
+  if (!variants) {
     return res.status(400).json({ success: false, error: 'Variants are required' });
   }
-  const variantValuesString = `[${Object.values(variantValues).map(value => `"${value}"`).join(',')}]`;
+
+  // Clean up variantValues before inserting into the database
+  const cleanedVariantValues = JSON.stringify(variantValues);
 
   // Insert product data into MySQL database
   const sql = "INSERT INTO products(`productName`, `productImage`, `productDescription`, `variants`, `variantValues`) VALUES (?,?,?,?,?);"
-  const values = [productName, productImage, productDescription, JSON.stringify(variants), variantValuesString];
+  const values = [productName, productImage, productDescription, variants, cleanedVariantValues];
   connection.query(sql, values, (err, result) => {
     if (err) {
       console.error('Error inserting data into MySQL:', err);

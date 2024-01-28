@@ -142,17 +142,16 @@ const AddProductForm = () => {
           </div>
           <div className="mb-2 font-bold text-white">Variants:</div>
           <ul className="list-disc pl-4 text-white">
-            {productData.variantValues.map((values, index) => (
-              <li key={index} className="mb-2">
-                {Object.entries(values).map(([variant, value]) => (
-                  <div key={variant}>
-                    <span className="font-bold">{variant}:</span>
-                    {Array.isArray(value) ? value.join(', ') : value}
-                  </div>
-                ))}
-              </li>
-            ))}
-          </ul>
+  {productData.variantValues.map((values, index) => (
+    <li key={index} className="mb-2">
+      {Object.entries(values).map(([variant, value]) => (
+        <div key={variant}>
+          <span className="font-bold">{variant}:</span> {Array.isArray(value) ? value.join(', ') : value}
+        </div>
+      ))}
+    </li>
+  ))}
+</ul>
           <button
             className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
             onClick={handleNext}
